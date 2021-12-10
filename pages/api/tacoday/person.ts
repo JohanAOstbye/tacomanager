@@ -24,7 +24,7 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
       console.log({ date: { $gte: today, $lt: tomorrow } });
 
       const result = await client
-        .db(process.env.MONGODB_DB)
+        .db()
         .collection('tacodays')
         .updateOne(
           { date: { $gte: today, $lt: tomorrow } },

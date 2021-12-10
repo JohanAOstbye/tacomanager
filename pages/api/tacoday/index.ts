@@ -19,7 +19,7 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
   if (method === 'GET') {
     try {
       const result = await client
-        .db(process.env.MONGODB_DB)
+        .db()
         .collection('tacodays')
         .aggregate([
           {
@@ -60,7 +60,7 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
   if (method === 'POST') {
     try {
       const update = await client
-        .db(process.env.NEXT_PUBLIC_MONGODB_DB)
+        .db()
         .collection('tacodays')
         .updateOne(
           { date: { $gte: today, $lt: tomorrow } },
@@ -79,10 +79,7 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
     const tacoday = { date: date, attendees: [name] };
 
     try {
-      const put = await client
-        .db(process.env.NEXT_PUBLIC_MONGODB_DB)
-        .collection('tacodays')
-        .insertOne(tacoday);
+      const put = await client.db().collection('tacodays').insertOne(tacoday);
       return response.status(201).json({ message: 'success', ...put });
     } catch (error) {
       console.log(error);
