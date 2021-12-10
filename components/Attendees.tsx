@@ -32,6 +32,7 @@ const Attendees = ({
           ))}
         </ul>
       </div>
+      Antall: {attendees.length}
     </div>
   );
 };
