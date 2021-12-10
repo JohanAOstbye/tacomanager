@@ -10,7 +10,12 @@ const NameJoin = (props: {
   const [name, setName] = useState('');
   const router = useRouter();
 
+  const regex = RegExp("^[A-Za-z0-9._~()'!*:@,;+?-]*$");
+
   const update = (add = false) => {
+    if (regex.test(name)) {
+      console.log('fuck u');
+    }
     let attendees = props.attendees;
     console.log();
 

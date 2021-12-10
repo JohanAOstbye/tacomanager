@@ -6,7 +6,7 @@ const Attendees = ({
   attendees,
 }: {
   date: string;
-  attendees: String[];
+  attendees: string[];
 }) => {
   const d = new Date(date);
   return (
@@ -25,7 +25,7 @@ const Attendees = ({
       </p>
       <div className='w-full bg-white rounded-lg shadow'>
         <ul className='divide-y-2 divide-gray-100'>
-          {attendees.map((attendee: String, index: number) => (
+          {attendees.map((attendee: string, index: number) => (
             <li key={index} className='p-3'>
               {attendee}
             </li>
