@@ -26,7 +26,7 @@ export default function Home() {
       <div className='flex flex-col-reverse lg:flex-row'>
         <div className='flex flex-col items-center '>
           <h1 className='text-5xl'>Taco with da BOIIIS</h1>
-          <p>Super side for all som skal ha taco</p>
+          <p>Super side for alle som skal ha taco</p>
           <NameJoin attendees={tacoday.attendees} refresh={getTacoday} />
           {loading ? (
             <div>loading</div>
