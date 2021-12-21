@@ -16,7 +16,6 @@ export default function New() {
 
   useEffect(() => {
     axios.get('api/tacoday').then((response) => {
-      console.log(response);
       if (response.status == 200) {
         router.push('/');
       }
@@ -24,8 +23,13 @@ export default function New() {
   }, []);
 
   const create = () => {
+    const { minutes, name } = tacotime;
+    const d = new Date();
+    const temp_hour = parseInt(tacotime.hours) + d.getTimezoneOffset() / 60;
+    const hours = temp_hour.toString();
+
     axios
-      .put(baseURL(window.location) + '/api/tacoday', { ...tacotime, name })
+      .put(baseURL(window.location) + '/api/tacoday', { hours, minutes, name })
       .then((response) => {
         if (response.status == 201) {
           router.push('/');
