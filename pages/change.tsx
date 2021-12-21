@@ -18,7 +18,6 @@ export default function Change() {
 
   useEffect(() => {
     axios.get<tacoday>('api/tacoday').then((response) => {
-      console.log(response);
       if (response.status == 200) {
         const { date } = response.data;
         const d = new Date(date);
@@ -31,14 +30,13 @@ export default function Change() {
   }, []);
 
   const change = () => {
-    const { hours, minutes } = tacotime;
+    const { minutes } = tacotime;
     const d = new Date();
-    const temp_hour = parseInt(hours) + d.getTimezoneOffset() / 60;
-    const hour = temp_hour.toString();
-    console.log(hour);
+    const temp_hour = parseInt(tacotime.hours) + d.getTimezoneOffset() / 60;
+    const hours = temp_hour.toString();
 
     axios
-      .post(baseURL(window.location) + '/api/tacoday', { hour, minutes })
+      .post(baseURL(window.location) + '/api/tacoday', { hours, minutes })
       .then((response) => {
         if (response.status == 200) {
           router.push('/');

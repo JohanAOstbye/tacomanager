@@ -55,7 +55,13 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
       .status(400)
       .json({ message: 'hours and minutes cant be arrays' });
   }
-  date.setHours(parseInt(hours), parseInt(minutes));
+  console.log(date);
+  const hour = parseInt(hours);
+  const minute = parseInt(minutes);
+  console.log({ hour, minute });
+
+  date.setHours(hour, minute);
+  console.log(date);
 
   if (method === 'POST') {
     try {
