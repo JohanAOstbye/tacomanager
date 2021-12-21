@@ -29,6 +29,8 @@ export default function Change() {
 
   const change = () => {
     const { hours, minutes } = tacotime;
+    console.log(tacotime);
+
     axios
       .post(baseURL(window.location) + '/api/tacoday', { hours, minutes })
       .then((response) => {
