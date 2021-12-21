@@ -7,7 +7,10 @@ import { tacoday } from '../lib/types';
 import { useRouter } from 'next/router';
 
 export default function Change() {
-  const [tacotime, setTacotime] = useState({
+  const [tacotime, setTacotime] = useState<{
+    hours: string;
+    minutes: string;
+  }>({
     hours: '',
     minutes: '',
   });
@@ -29,8 +32,13 @@ export default function Change() {
 
   const change = () => {
     const { hours, minutes } = tacotime;
+    const d = new Date();
+    const temp_hour = parseInt(hours) + d.getTimezoneOffset() / 60;
+    const hour = temp_hour.toString();
+    console.log(hour);
+
     axios
-      .post(baseURL(window.location) + '/api/tacoday', { hours, minutes })
+      .post(baseURL(window.location) + '/api/tacoday', { hour, minutes })
       .then((response) => {
         if (response.status == 200) {
           router.push('/');

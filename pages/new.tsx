@@ -24,8 +24,13 @@ export default function New() {
   }, []);
 
   const create = () => {
+    const { hours, minutes, name } = tacotime;
+    const d = new Date();
+    const temp_hour = parseInt(hours) + d.getTimezoneOffset() / 60;
+    const hour = temp_hour.toString();
+
     axios
-      .put(baseURL(window.location) + '/api/tacoday', { ...tacotime, name })
+      .put(baseURL(window.location) + '/api/tacoday', { hour, minutes, name })
       .then((response) => {
         if (response.status == 201) {
           router.push('/');
