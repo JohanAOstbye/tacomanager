@@ -32,7 +32,7 @@ export default clientPromise;
 
 export const mongoDate = 'YYYY-MM-DD[T00:00:00.000Z]';
 
-const feistel = {
+export const feistel = {
   encode: (id) => {
     return cipher.encrypt(id);
   },
