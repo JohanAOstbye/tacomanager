@@ -1,4 +1,10 @@
 export type tacoday = {
+  code: string;
   date: string | null;
-  attendees: string[];
+  attendees: displayuser[];
+};
+
+export type displayuser = {
+  name: string;
+  id: string;
 };

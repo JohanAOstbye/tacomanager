@@ -1,4 +1,7 @@
 import { MongoClient } from 'mongodb';
+import * as fc from 'feistel-cipher';
+
+const cipher = new fc.FPECipher(fc.SHA_256, process.env.CIPHER_SECRET, 128);
 
 const uri = process.env.MONGODB_URI;
 
@@ -28,3 +31,12 @@ if (process.env.NODE_ENV === 'development') {
 export default clientPromise;
 
 export const mongoDate = 'YYYY-MM-DD[T00:00:00.000Z]';
+
+const feistel = {
+  encode: (id) => {
+    return cipher.encrypt(id);
+  },
+  decode: (id) => {
+    return cipher.decrypt(id);
+  },
+};
