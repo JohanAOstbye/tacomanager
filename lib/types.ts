@@ -1,5 +1,5 @@
 export type tacoday = {
-  code: string;
+  tid: string;
   date: string | null;
   attendees: displayuser[];
 };

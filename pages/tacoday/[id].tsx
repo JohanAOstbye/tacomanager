@@ -1,7 +1,5 @@
-import axios from 'axios';
 import React from 'react';
-import Attendees from '../../components/Attendees';
-import clientPromise from '../../lib/mongodb';
+import clientPromise, { feistel } from '../../lib/mongodb';
 import { displayuser, tacoday } from '../../lib/types';
 
 const Tacoday = (props: { tacoday: tacoday }) => {
@@ -20,9 +18,12 @@ const Tacoday = (props: { tacoday: tacoday }) => {
 
 export default Tacoday;
 
-export async function getServerSideProps() {
+export async function getServerSideProps({ params }) {
   const client = await clientPromise;
-  const tacoday = await client.db();
+  const tacoday = await client
+    .db()
+    .collection('tacodays')
+    .findOne({ tid: feistel.decode(params.id) });
 
   return {
     props: {
