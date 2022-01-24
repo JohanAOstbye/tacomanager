@@ -14,7 +14,7 @@ export default function Home() {
         <div className='flex flex-col max-w-sm'>
           <h1 className='text-5xl'>Taco with da BOIIIS</h1>
           <div className='mx-8 mt-10'>
-            <ButtonLink link={'/new'} classNames='w-full'>
+            <ButtonLink link={'/tacoday/new'} classNames='w-full'>
               Planlegg en tacokveld
             </ButtonLink>
             <div className='w-full my-4 mx-auto opacity-50'>
