@@ -21,7 +21,7 @@ export const ButtonLink = ({
   return (
     <Link href={link}>
       <a
-        className={`${classNames} bg-blue-500 text-zinc-50 rounded-md py-2 px-4 font-bold`}
+        className={`${classNames} bg-blue-500 text-zinc-50 rounded-sm py-2 px-4 font-bold`}
       >
         {children}
       </a>
@@ -37,7 +37,7 @@ export const Button = ({
   return (
     <button
       onClick={onClick}
-      className={`${classNames} text-blue-500 bg-zinc-200 rounded-md py-2 px-4 font-bold`}
+      className={`${classNames} text-blue-500 bg-zinc-200 rounded-sm py-2 px-4 font-bold`}
     >
       {children}
     </button>
