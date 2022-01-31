@@ -18,18 +18,31 @@ export default function New() {
     );
   }
   if (status == 'unauthenticated') {
-    router.push('api/auth/signin');
+    router.replace('api/auth/signin');
   }
 
   const username = data.user.name ? data.user.name : data.user.email;
   const id = data.user.id;
-  const user = { username, id };
+  const now = new Date(Date.now());
+  const user = {
+    username,
+    id,
+    image: data.user.image
+      ? data.user.image
+      : `https://eu.ui-avatars.com/api/?name=${username}`,
+    joined: now,
+  };
 
   const create = async () => {
     setCreating(true);
-    const date = new Date();
+    const date = new Date(Date.now());
     date.setDate(date.getDate() + 1); // setter bare datoen til en dag frem i tid for debug purposes
-    const response = await axios.put('/api/tacoday', { tid: null, user, date });
+    const data = {
+      tid: null,
+      user,
+      date: date.toISOString(),
+    };
+    const response = await axios.put('/api/tacoday', data);
     router.push(`/tacoday/${response.data.tid}`);
     setCreating(false);
   };

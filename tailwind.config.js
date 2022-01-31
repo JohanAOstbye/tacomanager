@@ -5,7 +5,12 @@ module.exports = {
   ],
   darkMode: false, // or 'media' or 'class'
   theme: {
-    extend: {},
+    extend: {
+      screen: {
+        xxs: '320px',
+        xs: '440px',
+      },
+    },
   },
   variants: {
     extend: {},
