@@ -10,7 +10,7 @@ export default function Home() {
   const { data: session } = useSession();
   return (
     <Layout>
-      <div className='flex flex-col-reverse items-center lg:flex-row'>
+      <div className='flex flex-col-reverse items-center lg:flex-row text-center'>
         <div className='flex flex-col max-w-sm'>
           <h1 className='text-5xl'>Taco with da BOIIIS</h1>
           <div className='mx-8 mt-10'>
