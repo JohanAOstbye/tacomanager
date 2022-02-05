@@ -5,9 +5,10 @@ import { Button } from '../../components/elements/Button';
 import Layout from '../../components/layout';
 import { FullPageLoader } from '../../components/sections/FullLoader';
 import axios from 'axios';
-import username from '../api/profile/displayname';
+import { useRouter } from 'next/router';
 
-const NewUser = () => {
+const NewUser = (props: { callbackUrl: string }) => {
+  const router = useRouter();
   const { data: session, status } = useSession();
   const {
     handleSubmit,
@@ -15,23 +16,24 @@ const NewUser = () => {
     formState: { errors },
     getValues,
     setValue,
-  } = useForm({ defaultValues: { username: '' } });
+  } = useForm({ defaultValues: { displayname: '' } });
 
   if (status == 'loading') return <FullPageLoader />;
   if (
-    getValues('username') == '' &&
+    getValues('displayname') == '' &&
     session &&
     session.user &&
     session.user.name
   )
-    setValue('username', session.user.name);
+    setValue('displayname', session.user.name);
 
-  const onSubmit = async (values: { username: string }) => {
-    console.log(encodeURI(values.username));
+  const redirectLink = props.callbackUrl ? props.callbackUrl : '/';
+  console.log(redirectLink);
 
+  const onSubmit = async (values: { displayname: string }) => {
     axios
-      .post(`/api/profile/username`, { username: values.username })
-      .then((res) => console.log(res));
+      .post(`/api/profile/displayname`, { displayname: values.displayname })
+      .then(() => router.push(redirectLink));
   };
   return (
     <Layout>
@@ -54,11 +56,11 @@ const NewUser = () => {
           Brukernavn:
           <input
             className='w-full mb-8 mt-0.5 py-2 px-2 rounded-md '
-            {...register('username', {
+            {...register('displayname', {
               validate: (value) => value !== 'admin' || 'Nice try!',
             })}
           />
-          {errors.username && errors.username.message}
+          {errors.displayname && errors.displayname.message}
           <Button type='submit'>Lagre</Button>
         </form>
       </section>
@@ -67,3 +69,13 @@ const NewUser = () => {
 };
 
 export default NewUser;
+
+export async function getServerSideProps(ctx) {
+  const { query } = ctx;
+
+  return {
+    props: {
+      callbackUrl: query.callbackUrl,
+    },
+  };
+}

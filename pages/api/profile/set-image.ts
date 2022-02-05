@@ -55,12 +55,11 @@ const gifs = [
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getSession({ req });
-  console.log('hei');
-
   if (session && req.method == 'PUT') {
     const client = await clientPromise;
-    var gif = `images/buttsss/${gifs[Math.floor(Math.random() * gifs.length)]}`;
-    console.log(gif);
+    var gif = `/images/buttsss/${
+      gifs[Math.floor(Math.random() * gifs.length)]
+    }`;
 
     if (session.user.image) {
       const user = await client

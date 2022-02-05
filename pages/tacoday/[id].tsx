@@ -6,24 +6,23 @@ import { Button, ButtonLink } from '../../components/elements/Button';
 import Loading from '../../components/elements/Loading';
 import Layout from '../../components/layout';
 import NoTacoday from '../../components/sections/NoTacoday';
+import { date } from '../../lib/formatting';
 import clientPromise from '../../lib/mongodb';
 import { displayuser, tacoday } from '../../types/types';
 
 const Tacoday = (props: { tacoday }) => {
   const [tacoday, setTacoday] = useState<tacoday>({
-    date: new Date(props.tacoday.date_string),
-    ...props.tacoday,
+    ...JSON.parse(props.tacoday),
+    date: new Date(JSON.parse(props.tacoday)['date']),
   });
+  console.log(typeof tacoday.date);
+
   const [processing, setProcessing] = useState(false);
   const { data: session, status } = useSession();
 
   const attending =
     session &&
     tacoday.attendees.some((attendee) => attendee.id == session.user.id);
-
-  if (!tacoday.date_string) {
-    return <NoTacoday tid={tacoday.tid} />;
-  }
 
   const join = async () => {
     const username = session.user.name ? session.user.name : session.user.email;
@@ -32,9 +31,7 @@ const Tacoday = (props: { tacoday }) => {
     const user = {
       username,
       id,
-      image: session.user.image
-        ? session.user.image
-        : `https://eu.ui-avatars.com/api/?name=${username}`,
+      image: session.user.image,
       joined: now,
     };
 
@@ -46,11 +43,9 @@ const Tacoday = (props: { tacoday }) => {
     };
     const response = await axios.put('/api/tacoday/attendees', data);
     setTacoday({
-      date_string: response.data.date,
       date: new Date(response.data.date),
       ...response.data,
     });
-    console.log(tacoday);
 
     setProcessing(false);
   };
@@ -65,11 +60,9 @@ const Tacoday = (props: { tacoday }) => {
     };
     const response = await axios.post('/api/tacoday/attendees', data);
     setTacoday({
-      date_string: response.data.date,
       date: new Date(response.data.date),
       ...response.data,
     });
-    console.log(tacoday);
 
     setProcessing(false);
   };
@@ -79,28 +72,17 @@ const Tacoday = (props: { tacoday }) => {
         <div className='flex items-center justify-between w-full'>
           <div className=' truncate'>
             <h1 className='w-full text-2xl md:text-3xl text-left font-bold'>
-              Taco på {tacoday.date.toLocaleString('no', { weekday: 'long' })}
+              Taco på {date.day(tacoday.date)}
             </h1>
             <div id='clock' className='flex items-center truncate'>
               <FaClock className='mr-2' />
-              {tacoday.date.toLocaleString('no', {
-                hour12: false,
-                hour: '2-digit',
-                minute: '2-digit',
-              })}
+              {date.time(tacoday.date)}
               <FaCalendarDay className='ml-5 mr-2' />
               <span className='hidden xs:block truncate'>
-                {tacoday.date.toLocaleString('no', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
+                {date.long(tacoday.date)}
               </span>
               <span className='xs:hidden truncate'>
-                {tacoday.date.toLocaleString('no', {
-                  month: 'long',
-                  day: 'numeric',
-                })}
+                {date.medium(tacoday.date)}
               </span>
             </div>
             <p className='w-full text-left'>
@@ -152,33 +134,22 @@ const Tacoday = (props: { tacoday }) => {
             attendee.joined = new Date(attendee.joined);
 
             return (
-              <li className='flex justify-between w-full' key={attendee.id}>
-                <div className='flex'>
+              <li
+                className='flex justify-between items-center w-full my-1.5'
+                key={attendee.id}
+              >
+                <div className='flex items-center'>
                   <img
                     src={attendee.image}
-                    className='w-6 h-6 rounded-full mr-1.5'
+                    className='w-8 h-8 rounded-full mr-1.5'
                   />
                   {attendee.username}
                 </div>
                 <div className='block sm:hidden opacity-50 truncate '>
-                  {attendee.joined
-                    .toLocaleString('no', {
-                      month: 'numeric',
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })
-                    .replace(',', '')}
+                  {date.short_wtime(attendee.joined)}
                 </div>
                 <div className='hidden sm:block opacity-50 overflow-hidden'>
-                  Joined:{' '}
-                  {attendee.joined.toLocaleString('no', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })}
+                  Joined: {date.medium_wtime(attendee.joined)}
                 </div>
               </li>
             );
@@ -192,7 +163,7 @@ const Tacoday = (props: { tacoday }) => {
 export default Tacoday;
 
 export async function getServerSideProps(ctx) {
-  const { params } = ctx;
+  const { params, query } = ctx;
   const client = await clientPromise;
   const tacoday = await client
     .db()
@@ -212,20 +183,17 @@ export async function getServerSideProps(ctx) {
     };
   }
 
-  if (params.join) {
-    const session = await getSession(ctx);
+  const session = await getSession(ctx);
 
-    const username = session.user.name ? session.user.name : session.user.email;
+  if (query.join && tacoday.attendees.some((e) => e.id == session.user.id)) {
+    const username = session.user.displayname;
     const id = session.user.id;
     const now = new Date(Date.now());
     const user: displayuser = {
       username,
       id,
-      image: session.user.image
-        ? session.user.image
-        : `https://eu.ui-avatars.com/api/?name=${username}`,
+      image: session.user.image,
       joined: now,
-      joined_string: now.toISOString(),
     };
     client
       .db()
@@ -246,16 +214,9 @@ export async function getServerSideProps(ctx) {
     ).attendees;
   }
 
-  tacoday.date_string = tacoday.date.toISOString();
-  delete tacoday.date;
-  tacoday._id = tacoday._id.toString();
-  delete tacoday._id;
-
-  console.log(tacoday);
-
   return {
     props: {
-      tacoday: tacoday,
+      tacoday: JSON.stringify(tacoday),
     },
   };
 }

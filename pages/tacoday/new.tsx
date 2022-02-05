@@ -21,7 +21,7 @@ export default function New() {
     router.replace('api/auth/signin');
   }
 
-  const username = data.user.name ? data.user.name : data.user.email;
+  const username = data.user.displayname;
   const id = data.user.id;
   const now = new Date(Date.now());
   const user = {

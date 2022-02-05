@@ -22,7 +22,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           { $set: { displayname: displayname } },
           { returnDocument: 'after' }
         );
-      console.log(user);
 
       res.status(200).json({ user });
     } else {

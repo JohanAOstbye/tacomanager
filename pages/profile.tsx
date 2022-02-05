@@ -1,18 +1,18 @@
 import { getSession, signOut, useSession } from 'next-auth/react';
 import { redirect } from 'next/dist/server/api-utils';
 import React, { useState } from 'react';
-import { Button } from '../components/elements/Button';
+import { Button, ButtonLink } from '../components/elements/Button';
 import Layout from '../components/layout';
 import Router from 'next/router';
 import FullLoader from '../components/sections/FullLoader';
 import axios from 'axios';
 import clientPromise from '../lib/mongodb';
-import tacodays from './api/tacodays';
 import { tacoday } from '../types/types';
 
-const profile = (props: {
-  tacodays: [{ tid: string; date: Date; creator: string }];
-}) => {
+const profile = (props: { tacodays: string }) => {
+  const tacodays: [{ tid: string; date: Date; creator: string }] | [] =
+    JSON.parse(props.tacodays);
+
   const { data: session, status } = useSession();
   if (status == 'loading') {
     return (
@@ -45,10 +45,23 @@ const profile = (props: {
           </div>
           <img src={session.user.image} className='rounded-xl w-20 h-20'></img>
         </div>
-        {tacodays.length != 0 ? (
-          <div>
+        {tacodays.length !== 0 ? (
+          <div className='w-full'>
             <p>Dine kommende tacodager:</p>
-            {}
+            <div>
+              {tacodays.map((tacoday, index) => (
+                <div
+                  key={index}
+                  className='bg-white my-2 rounded p-1.5 flex w-full justify-between'
+                >
+                  <div className='truncate pr-5'>
+                    <p className='truncate '>Tacoday with {tacoday.creator}</p>
+                    <p>{tacoday.date}</p>
+                  </div>
+                  <ButtonLink link={'/tacoday/' + tacoday.tid}>Gå</ButtonLink>
+                </div>
+              ))}
+            </div>
           </div>
         ) : (
           ''
@@ -72,14 +85,19 @@ export async function getServerSideProps(ctx) {
   const session = await getSession(ctx);
   const client = await clientPromise;
 
-  let tacodays = await client
+  const res = await client
     .db()
     .collection<tacoday>('tacodays')
     .find({ attendees: { $elemMatch: { id: session.user.id } } })
     .toArray();
 
-  tacodays.map((tacoday) => {
-    tacoday.tid, tacoday.date, tacoday.creator;
+  const tacodays = res.map((tacoday) => {
+    const day = {
+      tid: tacoday.tid,
+      date: tacoday.date,
+      creator: tacoday.creator,
+    };
+    return day;
   });
 
   return {

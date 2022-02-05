@@ -1,8 +1,7 @@
 export type tacoday = {
   _id: string;
   tid: string;
-  date_string: string | null;
-  date?: Date | null;
+  date: Date;
   attendees: displayuser[];
   creator: string;
 };
@@ -12,7 +11,6 @@ export type displayuser = {
   id: string;
   image: undefined | string;
   joined?: Date;
-  joined_string: string;
 };
 
 export type sessionuser = {

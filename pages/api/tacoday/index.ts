@@ -45,7 +45,7 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
           tid: returnTid,
           date: date,
           attendees: [user],
-          creator: user.displayname,
+          creator: user.username,
         });
       return response.status(201).json({ message: 'success', tid: returnTid });
     } catch (error) {
