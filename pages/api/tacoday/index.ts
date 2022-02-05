@@ -68,25 +68,13 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
       const update = await client
         .db()
         .collection('tacodays')
-        .updateOne(
-          { date: { $gte: today, $lt: tomorrow } },
-          { $set: { date: date } }
-        );
-      return response.status(200).json(update);
-    } catch (error) {
-      return response.status(418).json(data);
-    }
-  }
-
-  if (method === 'PUT') {
-    const {
-      body: { name },
-    } = request;
-    const tacoday = { date: date, attendees: [name] };
-
-    try {
-      const put = await client.db().collection('tacodays').insertOne(tacoday);
-      return response.status(201).json({ message: 'success', ...put });
+        .insertOne({
+          tid: returnTid,
+          date: date,
+          attendees: [user],
+          creator: user.displayname,
+        });
+      return response.status(201).json({ message: 'success', tid: returnTid });
     } catch (error) {
       console.log(error);
       return response.status(418).json(data);
