@@ -19,6 +19,10 @@ const Tacoday = (props: { tacoday }) => {
   const [processing, setProcessing] = useState(false);
   const { data: session, status } = useSession();
 
+  if (!tacoday) {
+    return <NoTacoday tid={''} />;
+  }
+
   const attending =
     session &&
     tacoday.attendees.some((attendee) => attendee.id == session.user.id);
