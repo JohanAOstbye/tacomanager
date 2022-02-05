@@ -8,6 +8,7 @@ import FullLoader from '../components/sections/FullLoader';
 import axios from 'axios';
 import clientPromise from '../lib/mongodb';
 import { tacoday } from '../types/types';
+import { date } from '../lib/formatting';
 
 const profile = (props: { tacodays: string }) => {
   const tacodays: [{ tid: string; date: Date; creator: string }] | [] =
@@ -56,7 +57,9 @@ const profile = (props: { tacodays: string }) => {
                 >
                   <div className='truncate pr-5'>
                     <p className='truncate '>Tacoday with {tacoday.creator}</p>
-                    <p>{tacoday.date}</p>
+                    <p className='text-sm text-gray-500'>
+                      {date.medium_wtime(new Date(tacoday.date))}
+                    </p>
                   </div>
                   <ButtonLink link={'/tacoday/' + tacoday.tid}>Gå</ButtonLink>
                 </div>

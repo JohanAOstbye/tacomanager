@@ -15,7 +15,6 @@ const Tacoday = (props: { tacoday }) => {
     ...JSON.parse(props.tacoday),
     date: new Date(JSON.parse(props.tacoday)['date']),
   });
-  console.log(typeof tacoday.date);
 
   const [processing, setProcessing] = useState(false);
   const { data: session, status } = useSession();
@@ -25,7 +24,7 @@ const Tacoday = (props: { tacoday }) => {
     tacoday.attendees.some((attendee) => attendee.id == session.user.id);
 
   const join = async () => {
-    const username = session.user.name ? session.user.name : session.user.email;
+    const username = session.user.displayname;
     const id = session.user.id;
     const now = new Date(Date.now());
     const user = {
