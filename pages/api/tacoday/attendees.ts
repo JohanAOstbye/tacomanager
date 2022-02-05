@@ -2,7 +2,7 @@ import { ObjectID } from 'bson';
 import { MongoClient, ReturnDocument } from 'mongodb';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import clientPromise, { hash, zeroPad } from '../../../lib/mongodb';
-import { displayuser, tacoday } from '../../../lib/types';
+import { displayuser, tacoday } from '../../../types/types';
 
 export default async (request: NextApiRequest, response: NextApiResponse) => {
   const { method } = request;

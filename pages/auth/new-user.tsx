@@ -4,10 +4,10 @@ import { useForm } from 'react-hook-form';
 import { Button } from '../../components/elements/Button';
 import Layout from '../../components/layout';
 import { FullPageLoader } from '../../components/sections/FullLoader';
-import { useRouter } from 'next/router';
+import axios from 'axios';
+import username from '../api/profile/displayname';
 
 const NewUser = () => {
-  const router = useRouter();
   const { data: session, status } = useSession();
   const {
     handleSubmit,
@@ -26,7 +26,13 @@ const NewUser = () => {
   )
     setValue('username', session.user.name);
 
-  const onSubmit = async (values: { username: string }) => {};
+  const onSubmit = async (values: { username: string }) => {
+    console.log(encodeURI(values.username));
+
+    axios
+      .post(`/api/profile/username`, { username: values.username })
+      .then((res) => console.log(res));
+  };
   return (
     <Layout>
       <section className=' max-w-lg w-full bg-gray-100 flex flex-col items-start p-5 rounded-lg'>

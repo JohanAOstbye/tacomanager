@@ -7,7 +7,7 @@ import Loading from '../../components/elements/Loading';
 import Layout from '../../components/layout';
 import NoTacoday from '../../components/sections/NoTacoday';
 import clientPromise from '../../lib/mongodb';
-import { displayuser, tacoday } from '../../lib/types';
+import { displayuser, tacoday } from '../../types/types';
 
 const Tacoday = (props: { tacoday }) => {
   const [tacoday, setTacoday] = useState<tacoday>({

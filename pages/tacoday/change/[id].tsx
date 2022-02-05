@@ -3,18 +3,12 @@ import { FaCalendarDay, FaClock } from 'react-icons/fa';
 import { ButtonLink } from '../../../components/elements/Button';
 import Layout from '../../../components/layout';
 import clientPromise from '../../../lib/mongodb';
-import { displayuser, tacoday } from '../../../lib/types';
+import { displayuser, tacoday } from '../../../types/types';
 
 const ChangeTacoday = ({ tacoday }: { tacoday: tacoday }) => {
   const { date_string, attendees, tid } = tacoday;
 
   const date = new Date(date_string);
-
-  if (!date) {
-    return (
-      
-    );
-  }
   return (
     <Layout>
       <section className=' max-w-lg w-full bg-gray-100 flex flex-col items-start p-5 rounded-lg'>

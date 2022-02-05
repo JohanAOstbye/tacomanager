@@ -41,7 +41,12 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
       await client
         .db()
         .collection('tacodays')
-        .insertOne({ tid: returnTid, date: date, attendees: [user] });
+        .insertOne({
+          tid: returnTid,
+          date: date,
+          attendees: [user],
+          creator: user.displayname,
+        });
       return response.status(201).json({ message: 'success', tid: returnTid });
     } catch (error) {
       return response.status(418).json(data);
