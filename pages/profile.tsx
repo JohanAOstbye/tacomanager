@@ -1,6 +1,6 @@
 import { getSession, signOut, useSession } from 'next-auth/react';
 import { redirect } from 'next/dist/server/api-utils';
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '../components/elements/Button';
 import Layout from '../components/layout';
 import Router from 'next/router';
