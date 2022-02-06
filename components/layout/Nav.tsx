@@ -1,16 +1,16 @@
-import React from 'react';
-import { useSession } from 'next-auth/react';
-import Link from 'next/link';
-import Image from 'next/image';
-import taco from '../../public/images/taco.svg';
+import React from 'react'
+import { useSession } from 'next-auth/react'
+import Link from 'next/link'
+import Image from 'next/image'
+import taco from '../../public/images/taco.svg'
 
 const Nav = () => {
-  const { data: session } = useSession();
+  const { data: session } = useSession()
   return (
-    <div className='w-full h-16 flex items-center justify-between'>
-      <Link href='/'>
+    <div className="w-full h-16 flex items-center justify-between">
+      <Link href="/">
         <a className={`font-bold p-3 m-2 h-16 w-16`}>
-          <Image src={taco} objectFit='contain' />
+          <Image src={taco} objectFit="contain" alt="Home | Tacologo" />
         </a>
       </Link>
       <div>
@@ -28,7 +28,7 @@ const Nav = () => {
         </Link>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Nav;
+export default Nav

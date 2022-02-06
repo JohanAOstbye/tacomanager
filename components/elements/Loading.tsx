@@ -1,8 +1,9 @@
-import React from 'react';
+import React from 'react'
 
 type props = {
-  size?: sizeEnum;
-};
+  size?: sizeEnum
+  white?: boolean
+}
 
 const sizeEnum = {
   sm: 'w-4 h-4',
@@ -10,18 +11,18 @@ const sizeEnum = {
   lg: 'w-10 h-10',
   xl: 'w-16 h-16',
   xxl: 'w-32 h-32',
-};
+}
 
-type sizeEnum = typeof sizeEnum[keyof typeof sizeEnum];
+type sizeEnum = typeof sizeEnum[keyof typeof sizeEnum]
 
 const Loading = ({ size = 'base' }: props) => {
-  console.log(sizeEnum[size]);
+  console.log(sizeEnum[size])
 
   return (
     <div
       className={`animate-spin border-t-transparent ease-linear rounded-full border-4 border-blue-500 ${sizeEnum[size]}`}
     ></div>
-  );
-};
+  )
+}
 
-export default Loading;
+export default Loading

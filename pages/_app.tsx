@@ -1,6 +1,6 @@
-import React from 'react';
-import { SessionProvider } from 'next-auth/react';
-import '../styles/index.css';
+import React from 'react'
+import { SessionProvider } from 'next-auth/react'
+import '../styles/index.css'
 
 export default function App({
   Component,
@@ -10,5 +10,5 @@ export default function App({
     <SessionProvider session={session}>
       <Component {...pageProps} />
     </SessionProvider>
-  );
+  )
 }
