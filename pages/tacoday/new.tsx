@@ -27,9 +27,7 @@ export default function New() {
   const user = {
     username,
     id,
-    image: data.user.image
-      ? data.user.image
-      : `https://eu.ui-avatars.com/api/?name=${username}`,
+    image: data.user.image,
     joined: now,
   }
 
