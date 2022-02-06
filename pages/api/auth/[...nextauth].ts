@@ -77,7 +77,6 @@ export default NextAuth({
   callbacks: {
     async session({ session, token, user }) {
       session.user = user;
-      session.token = token;
       return session;
     },
   },
@@ -89,7 +88,4 @@ export default NextAuth({
   },
   adapter: MongoDBAdapter(clientPromise),
   debug: true,
-  pages: {
-    newUser: '/auth/new-user',
-  },
 });
