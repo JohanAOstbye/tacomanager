@@ -1,27 +1,40 @@
 import React, { ReactNode } from 'react';
 import Link from 'next/link';
 
-type linkprops = {
+type linkprops = React.AnchorHTMLAttributes<HTMLAnchorElement> & {
   link: string;
   children: ReactNode;
   classNames?: string;
+  primary?: boolean;
+  error?: boolean;
 };
 
-type btnprops = {
-  onClick: () => void;
+type btnprops = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   children: ReactNode;
   classNames?: string;
+  primary?: boolean;
+  error?: boolean;
 };
 
 export const ButtonLink = ({
   link = '/test',
   children = 'test',
   classNames,
+  primary = true,
+  error = false,
+  ...props
 }: linkprops) => {
   return (
     <Link href={link}>
       <a
-        className={`${classNames} bg-blue-500 text-zinc-50 rounded-sm py-2 px-4 font-bold`}
+        {...props}
+        className={`${classNames} ${
+          error
+            ? 'bg-red-500 text-zinc-50'
+            : primary
+            ? 'bg-blue-500 text-zinc-50'
+            : 'bg-zinc-200 text-blue-500'
+        } rounded-md py-2 px-4 font-bold`}
       >
         {children}
       </a>
@@ -30,14 +43,22 @@ export const ButtonLink = ({
 };
 
 export const Button = ({
-  onClick,
   children = 'test',
   classNames,
+  primary = true,
+  error = false,
+  ...props
 }: btnprops) => {
   return (
     <button
-      onClick={onClick}
-      className={`${classNames} text-blue-500 bg-zinc-200 rounded-sm py-2 px-4 font-bold`}
+      {...props}
+      className={`${classNames} ${
+        error
+          ? 'bg-red-500 text-zinc-50'
+          : primary
+          ? 'bg-blue-500 text-zinc-50'
+          : 'bg-zinc-200 text-blue-500'
+      } rounded-md py-2 px-4 font-bold`}
     >
       {children}
     </button>
