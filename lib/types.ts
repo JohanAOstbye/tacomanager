@@ -1,10 +1,10 @@
 export type tacoday = {
-  tid: string;
-  date: string | null;
-  attendees: displayuser[];
-};
+  tid: string
+  date: string | null
+  attendees: displayuser[]
+}
 
 export type displayuser = {
-  name: string;
-  id: string;
-};
+  name: string
+  id: string
+}
