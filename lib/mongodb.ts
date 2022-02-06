@@ -1,5 +1,5 @@
 import { MongoClient, MongoClientOptions } from 'mongodb';
-import * as fc from 'feistel-cipher';
+import Hashids from 'hashids';
 
 const uri = process.env.MONGODB_URI;
 
@@ -33,13 +33,17 @@ if (process.env.NODE_ENV === 'development') {
 // separate module, the client can be shared across functions.
 export default clientPromise;
 
-const cipher = new fc.FPECipher(fc.SHA_256, process.env.CIPHER_SECRET, 128);
+const hashids = new Hashids(process.env.HASH_SALT);
 
-export const feistel = {
-  encode: (id) => {
-    return cipher.encrypt(id);
+export const hash = {
+  encode: (num) => {
+    return hashids.encodeHex(num);
   },
-  decode: (id) => {
-    return cipher.decrypt(id);
+  decode: (num) => {
+    return hashids.decodeHex(num);
   },
 };
+
+export function zeroPad(num) {
+  return num.toString().padStart(6, '0');
+}

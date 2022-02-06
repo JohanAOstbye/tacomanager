@@ -1,4 +1,5 @@
 import Loading from '../elements/Loading';
+import Layout from '../layout';
 
 const FullLoader = () => (
   <div className='flex flex-col justify-center items-center'>
@@ -8,6 +9,12 @@ const FullLoader = () => (
       This may take a few seconds, please don't close this page.
     </p>
   </div>
+);
+
+export const FullPageLoader = () => (
+  <Layout>
+    <FullLoader />
+  </Layout>
 );
 
 export default FullLoader;
