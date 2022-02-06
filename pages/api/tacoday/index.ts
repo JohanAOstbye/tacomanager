@@ -7,8 +7,7 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
   const { method } = request;
   const client = await clientPromise;
 
-  const { tid, user, date: string_date } = request.body;
-
+  const { tid, user, string_date } = request.body;
   const date = new Date(string_date);
 
   let data = { message: 'yeet skibbideet' };
@@ -41,14 +40,10 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
       await client
         .db()
         .collection('tacodays')
-        .insertOne({
-          tid: returnTid,
-          date: date,
-          attendees: [user],
-          creator: user.username,
-        });
+        .insertOne({ tid: returnTid, date: date, attendees: [user] });
       return response.status(201).json({ message: 'success', tid: returnTid });
     } catch (error) {
+      console.log(error);
       return response.status(418).json(data);
     }
   }

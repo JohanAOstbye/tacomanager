@@ -5,17 +5,14 @@ import Nav from './Nav';
 
 type Props = {
   children?: ReactNode;
-  className?: string;
 };
 
-const Layout = ({ children, className }: Props) => {
+const Layout = ({ children }: Props) => {
   return (
-    <div
-      className={`${className} text-gray-700 flex flex-col items-center justify-center min-h-screen max-w`}
-    >
+    <div className=' text-gray-700 flex flex-col items-center justify-center min-h-screen'>
       <Head title='Taco' />
       <Nav />
-      <main className='flex flex-col items-center justify-center w-full flex-1 px-5'>
+      <main className='flex flex-col items-center justify-center w-full flex-1 px-5 text-center'>
         {children}
       </main>
       <Footer />
