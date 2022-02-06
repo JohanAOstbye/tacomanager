@@ -3,20 +3,20 @@ export const date = {
     return date.toLocaleString('no', {
       month: 'numeric',
       day: 'numeric',
-    });
+    })
   },
   medium: (date: Date) => {
     return date.toLocaleString('no', {
       month: 'long',
       day: 'numeric',
-    });
+    })
   },
   long: (date: Date) => {
     return date.toLocaleString('no', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
-    });
+    })
   },
   short_wtime: (date: Date) => {
     return date
@@ -26,7 +26,7 @@ export const date = {
         hour: '2-digit',
         minute: '2-digit',
       })
-      .replace(',', '');
+      .replace(',', '')
   },
   medium_wtime: (date: Date) => {
     return date
@@ -36,7 +36,7 @@ export const date = {
         hour: '2-digit',
         minute: '2-digit',
       })
-      .replace(',', '');
+      .replace(',', '')
   },
   long_wtime: (date: Date) => {
     return date
@@ -47,18 +47,18 @@ export const date = {
         hour: '2-digit',
         minute: '2-digit',
       })
-      .replace(',', '');
+      .replace(',', '')
   },
   time: (date: Date) => {
     return date.toLocaleString('no', {
       hour12: false,
       hour: '2-digit',
       minute: '2-digit',
-    });
+    })
   },
   day: (date: Date) => {
     return date.toLocaleString('no', {
       weekday: 'long',
-    });
+    })
   },
-};
+}

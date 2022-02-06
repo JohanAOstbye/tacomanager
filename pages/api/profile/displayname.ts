@@ -1,18 +1,18 @@
-import { ObjectID } from 'bson';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { getSession } from 'next-auth/react';
-import clientPromise from '../../../lib/mongodb';
+import { ObjectID } from 'bson'
+import { NextApiRequest, NextApiResponse } from 'next'
+import { getSession } from 'next-auth/react'
+import clientPromise from '../../../lib/mongodb'
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const { displayname } = req.body;
+  const { displayname } = req.body
 
-  const session = await getSession({ req });
+  const session = await getSession({ req })
   if (session) {
     if (req.method == 'POST') {
       if (displayname == null) {
-        res.status(418).json({ message: 'no updatevalue specified' });
+        res.status(418).json({ message: 'no updatevalue specified' })
       }
-      const client = await clientPromise;
+      const client = await clientPromise
 
       const user = await client
         .db()
@@ -21,13 +21,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           { _id: new ObjectID(session.user.id) },
           { $set: { displayname: displayname } },
           { returnDocument: 'after' }
-        );
+        )
 
-      res.status(200).json({ user });
+      res.status(200).json({ user })
     } else {
-      res.status(418).json({ message: 'This only accepts post methods' });
+      res.status(418).json({ message: 'This only accepts post methods' })
     }
   } else {
-    res.status(418).json({ message: 'you are not logged in' });
+    res.status(418).json({ message: 'you are not logged in' })
   }
-};
+}

@@ -1,20 +1,20 @@
-import React, { ReactNode } from 'react';
-import Link from 'next/link';
+import React, { ReactNode } from 'react'
+import Link from 'next/link'
 
 type linkprops = React.AnchorHTMLAttributes<HTMLAnchorElement> & {
-  link: string;
-  children: ReactNode;
-  classNames?: string;
-  primary?: boolean;
-  error?: boolean;
-};
+  link: string
+  children: ReactNode
+  classNames?: string
+  primary?: boolean
+  error?: boolean
+}
 
 type btnprops = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  children: ReactNode;
-  classNames?: string;
-  primary?: boolean;
-  error?: boolean;
-};
+  children: ReactNode
+  classNames?: string
+  primary?: boolean
+  error?: boolean
+}
 
 export const ButtonLink = ({
   link = '/test',
@@ -39,8 +39,8 @@ export const ButtonLink = ({
         {children}
       </a>
     </Link>
-  );
-};
+  )
+}
 
 export const Button = ({
   children = 'test',
@@ -62,5 +62,5 @@ export const Button = ({
     >
       {children}
     </button>
-  );
-};
+  )
+}

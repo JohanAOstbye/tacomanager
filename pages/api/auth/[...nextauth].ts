@@ -1,10 +1,10 @@
-import NextAuth from 'next-auth';
-import { compare, hash, genSalt } from 'bcryptjs';
-import EmailProvider from 'next-auth/providers/email';
-import CredentialsProvider from 'next-auth/providers/credentials';
-import GoogleProvider from 'next-auth/providers/google';
-import { MongoDBAdapter } from '@next-auth/mongodb-adapter';
-import clientPromise from '../../../lib/mongodb';
+import NextAuth from 'next-auth'
+import { compare, hash, genSalt } from 'bcryptjs'
+import EmailProvider from 'next-auth/providers/email'
+import CredentialsProvider from 'next-auth/providers/credentials'
+import GoogleProvider from 'next-auth/providers/google'
+import { MongoDBAdapter } from '@next-auth/mongodb-adapter'
+import clientPromise from '../../../lib/mongodb'
 
 export default NextAuth({
   // Configure one or more authentication providers
@@ -35,50 +35,47 @@ export default NextAuth({
         username: { label: 'Username', type: 'text', placeholder: 'jsmith' },
         password: { label: 'Password', type: 'password' },
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         // You need to provide your own logic here that takes the credentials
         // submitted and returns either a object representing a user or value
         // that is false/null if the credentials are invalid.
         // e.g. return { id: 1, name: 'J Smith', email: 'jsmith@example.com' }
         // You can also use the `req` object to obtain additional parameters
         // (i.e., the request IP address)
-        const client = await clientPromise;
+        const client = await clientPromise
         let user = await client
           .db()
           .collection('users')
-          .findOne({ username: credentials.username });
-        const salt = await genSalt(10);
+          .findOne({ username: credentials.username })
+        const salt = await genSalt(10)
 
         if (!user) {
           // create the user
-          const newUser = credentials;
-          newUser.password = await hash(credentials.password, salt);
+          const newUser = credentials
+          newUser.password = await hash(credentials.password, salt)
 
           const id = (await client.db().collection('users').insertOne(newUser))
-            .insertedId;
-          user = await client.db().collection('users').findOne({ _id: id });
-          return user;
+            .insertedId
+          user = await client.db().collection('users').findOne({ _id: id })
+          return user
         }
 
-        const PasswordMatch = await compare(
-          credentials.password,
-          user.password
-        );
+        const PasswordMatch = await compare(credentials.password, user.password)
         if (!PasswordMatch) {
-          throw new Error('No user found with the username and password');
+          throw new Error('No user found with the username and password')
         }
 
-        delete user.password;
+        delete user.password
 
-        return user;
+        return user
       },
     }),
   ],
   callbacks: {
     async session({ session, token, user }) {
-      session.user = user;
-      session.token = token;
-      return session;
+      session.user = user
+      session.token = token
+      return session
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
@@ -92,4 +89,4 @@ export default NextAuth({
   pages: {
     newUser: '/auth/new-user',
   },
-});
+})

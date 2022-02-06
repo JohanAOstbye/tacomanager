@@ -1,7 +1,7 @@
-import { ObjectID } from 'bson';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { getSession } from 'next-auth/react';
-import clientPromise from '../../../lib/mongodb';
+import { ObjectID } from 'bson'
+import { NextApiRequest, NextApiResponse } from 'next'
+import { getSession } from 'next-auth/react'
+import clientPromise from '../../../lib/mongodb'
 
 const gifs = [
   'Alien-Butt.gif',
@@ -51,15 +51,15 @@ const gifs = [
   'underwater-butt.gif',
   'vampire-butt.gif',
   'vampire.gif',
-];
+]
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const session = await getSession({ req });
+  const session = await getSession({ req })
   if (session && req.method == 'PUT') {
-    const client = await clientPromise;
-    var gif = `/images/buttsss/${
+    const client = await clientPromise
+    const gif = `/images/buttsss/${
       gifs[Math.floor(Math.random() * gifs.length)]
-    }`;
+    }`
 
     if (session.user.image) {
       const user = await client
@@ -69,9 +69,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           { _id: new ObjectID(session.user.id) },
           { $set: { image: gif } },
           { returnDocument: 'after' }
-        );
+        )
 
-      res.status(200).json({ user });
+      res.status(200).json({ user })
     }
 
     const user = await client
@@ -81,9 +81,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         { _id: new ObjectID(session.user.id) },
         { $set: { image: gif } },
         { returnDocument: 'after' }
-      );
-    res.status(200).json({ user });
+      )
+    res.status(200).json({ user })
   } else {
-    res.status(418).json({ message: 'you are not logged in' });
+    res.status(418).json({ message: 'you are not logged in' })
   }
-};
+}
