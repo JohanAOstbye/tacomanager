@@ -86,6 +86,10 @@ export default NextAuth({
   },
   adapter: MongoDBAdapter(clientPromise),
   debug: true,
+  session: {
+    maxAge: 24 * 60 * 60,
+    updateAge: 60 * 60,
+  },
   pages: {
     newUser: '/auth/new-user',
   },

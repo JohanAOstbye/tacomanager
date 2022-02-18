@@ -15,12 +15,10 @@ const sizeEnum = {
 
 type sizeEnum = typeof sizeEnum[keyof typeof sizeEnum]
 
-const Loading = ({ size = 'base', white = false }: props) => {
+const Loading = ({ size = 'base' }: props) => {
   return (
     <div
-      className={`animate-spin border-t-transparent ease-linear rounded-full border-4 ${
-        white ? 'border-white' : 'border-blue-500'
-      } ${sizeEnum[size]}`}
+      className={`animate-spin border-t-transparent ease-linear rounded-full border-4 border-blue-500 ${sizeEnum[size]}`}
     ></div>
   )
 }
