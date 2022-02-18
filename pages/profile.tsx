@@ -7,7 +7,7 @@ import FullLoader from '../components/sections/FullLoader'
 import axios from 'axios'
 import clientPromise from '../lib/mongodb'
 import { tacoday } from '../types/types'
-import { date } from '../lib/formatting'
+import { dateformatter } from '../lib/formatting'
 import Image from 'next/image'
 
 const Profile = (props: { tacodays: string }) => {
@@ -44,30 +44,35 @@ const Profile = (props: { tacodays: string }) => {
             </h1>
             <p className="text-sm">diggg er kult</p>
           </div>
-          <Image
-            src={session.user.image}
-            alt="profile picture"
-            className="rounded-xl w-20 h-20"
-          ></Image>
+          <div className="relative rounded-xl w-20 h-20">
+            <Image
+              src={session.user.image}
+              alt="profile picture"
+              layout="fill"
+            ></Image>
+          </div>
         </div>
         {tacodays.length !== 0 ? (
           <div className="w-full">
             <p>Dine kommende tacodager:</p>
             <div>
-              {tacodays.map((tacoday, index) => (
-                <div
-                  key={index}
-                  className="bg-white my-2 rounded p-1.5 flex w-full justify-between"
-                >
-                  <div className="truncate pr-5">
-                    <p className="truncate ">Tacoday with {tacoday.creator}</p>
-                    <p className="text-sm text-gray-500">
-                      {date.medium_wtime(new Date(tacoday.date))}
-                    </p>
+              {tacodays &&
+                tacodays.map((tacoday, index) => (
+                  <div
+                    key={index}
+                    className="bg-white my-2 rounded p-1.5 flex w-full justify-between"
+                  >
+                    <div className="truncate pr-5">
+                      <p className="truncate ">
+                        Tacoday with {tacoday.creator}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        {dateformatter.medium_wtime(new Date(tacoday.date))}
+                      </p>
+                    </div>
+                    <ButtonLink link={'/tacoday/' + tacoday.tid}>Gå</ButtonLink>
                   </div>
-                  <ButtonLink link={'/tacoday/' + tacoday.tid}>Gå</ButtonLink>
-                </div>
-              ))}
+                ))}
             </div>
           </div>
         ) : (

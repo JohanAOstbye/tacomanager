@@ -1,4 +1,4 @@
-export const date = {
+export const dateformatter = {
   short: (date: Date) => {
     return date.toLocaleString('no', {
       month: 'numeric',
@@ -60,5 +60,16 @@ export const date = {
     return date.toLocaleString('no', {
       weekday: 'long',
     })
+  },
+  mediumday_wtime: (date: Date) => {
+    return date
+      .toLocaleString('no', {
+        weekday: 'long',
+        month: 'numeric',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+      .replace(',', '')
   },
 }
