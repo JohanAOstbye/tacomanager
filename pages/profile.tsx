@@ -44,11 +44,13 @@ const Profile = (props: { tacodays: string }) => {
             </h1>
             <p className="text-sm">diggg er kult</p>
           </div>
-          <Image
-            src={session.user.image}
-            alt="profile picture"
-            className="rounded-xl w-20 h-20"
-          ></Image>
+          <div className="rounded-xl w-20 h-20 relative">
+            <Image
+              src={session.user.image}
+              alt="profile picture"
+              layout="fill"
+            ></Image>
+          </div>
         </div>
         {tacodays.length !== 0 ? (
           <div className="w-full">
