@@ -1,17 +1,17 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { getSession } from 'next-auth/react'
 import clientPromise, { hash, zeroPad } from '../../../lib/mongodb'
 
 export default async (request: NextApiRequest, response: NextApiResponse) => {
   const { method } = request
   const client = await clientPromise
-
-  const { tid, user, date: string_date } = request.body
-
+  const session = await getSession({ req: request })
+  const { date: string_date } = request.body
   const date = new Date(string_date)
 
-  const data = { message: 'yeet skibbideet' }
-
   if (method === 'POST') {
+    const { tid } = request.body
+
     try {
       const update = await client.db().collection('tacodays').findOneAndUpdate(
         { tid: tid },
@@ -21,7 +21,7 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
       )
       return response.status(200).json(update)
     } catch (error) {
-      return response.status(418).json(data)
+      return response.status(418).json({ message: 'failed:(' })
     }
   }
 
@@ -42,12 +42,12 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
         .insertOne({
           tid: returnTid,
           date: date,
-          attendees: [user],
-          creator: user.username,
+          attendees: [session.user],
+          creator: session.user.displayname,
         })
       return response.status(201).json({ message: 'success', tid: returnTid })
     } catch (error) {
-      return response.status(418).json(data)
+      return response.status(418).json({ message: 'failed:(' })
     }
   }
 }
