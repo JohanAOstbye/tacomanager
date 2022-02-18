@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { Controller, useForm } from 'react-hook-form'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
@@ -30,13 +29,31 @@ export default function New() {
     )
   }
   if (status == 'unauthenticated') {
-    router.push('/api/auth/signin')
+    router.replace('api/auth/signin')
   }
 
-  const create = async (data: { date: Date }) => {
-    setCreating(true)
-    const response = await axios.put('/api/tacoday', data)
+  const username = data.user.displayname
+  const id = data.user.id
+  const now = new Date(Date.now())
+  const user = {
+    username,
+    id,
+    image: data.user.image
+      ? data.user.image
+      : `https://eu.ui-avatars.com/api/?name=${username}`,
+    joined: now,
+  }
 
+  const create = async () => {
+    setCreating(true)
+    const date = new Date(Date.now())
+    date.setDate(date.getDate() + 1) // setter bare datoen til en dag frem i tid for debug purposes
+    const data = {
+      tid: null,
+      user,
+      date: date.toISOString(),
+    }
+    const response = await axios.put('/api/tacoday', data)
     router.push(`/tacoday/${response.data.tid}`)
     setCreating(false)
   }

@@ -28,6 +28,7 @@ const NewUser = (props: { callbackUrl: string }) => {
     setValue('displayname', session.user.name)
 
   const redirectLink = props.callbackUrl ? props.callbackUrl : '/'
+  console.log(redirectLink)
 
   const onSubmit = async (values: { displayname: string }) => {
     axios
