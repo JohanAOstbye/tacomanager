@@ -1,17 +1,13 @@
-import React, { ReactNode } from 'react'
+import React from 'react'
 import Link from 'next/link'
 
 type linkprops = React.AnchorHTMLAttributes<HTMLAnchorElement> & {
   link: string
-  children: ReactNode
-  classNames?: string
   primary?: boolean
   error?: boolean
 }
 
 type btnprops = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  children: ReactNode
-  classNames?: string
   primary?: boolean
   error?: boolean
 }
@@ -19,12 +15,12 @@ type btnprops = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 export const ButtonLink = ({
   link = '/test',
   children = 'test',
-  classNames,
+  className,
 }: linkprops) => {
   return (
     <Link href={link}>
       <a
-        className={`${classNames} bg-blue-500 text-zinc-50 rounded-sm py-2 px-4 font-bold`}
+        className={`${className} bg-blue-500 text-zinc-50 rounded-sm py-2 px-4 font-bold`}
       >
         {children}
       </a>
@@ -32,15 +28,12 @@ export const ButtonLink = ({
   )
 }
 
-export const Button = ({
-  onClick,
-  children = 'test',
-  classNames,
-}: btnprops) => {
+export const Button = ({ onClick, children = 'test', className }: btnprops) => {
   return (
     <button
       onClick={onClick}
-      className={`${classNames} text-blue-500 bg-zinc-200 rounded-sm py-2 px-4 font-bold`}
+      className={`${className} text-blue-500 bg-white shadow rounded-lg
+       py-2 px-4 font-bold`}
     >
       {children}
     </button>
