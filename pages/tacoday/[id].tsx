@@ -221,7 +221,7 @@ export async function getServerSideProps(ctx) {
 
   return {
     props: {
-      tacoday: tacoday,
+      tacoday: JSON.stringify(tacoday),
     },
   }
 }

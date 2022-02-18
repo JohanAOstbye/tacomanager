@@ -3,9 +3,14 @@ module.exports = {
     './pages/**/*.{js,ts,jsx,tsx}',
     './components/**/*.{js,ts,jsx,tsx}',
   ],
-  darkMode: 'media', // or 'media' or 'class'
+  darkMode: false, // or 'media' or 'class'
   theme: {
-    extend: {},
+    extend: {
+      screen: {
+        xxs: '320px',
+        xs: '440px',
+      },
+    },
   },
   variants: {
     extend: {},
