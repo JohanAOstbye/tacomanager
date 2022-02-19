@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { Button } from './Button'
 
@@ -6,7 +7,15 @@ const Input = (props: {
   btnText?: string
   onClick?: () => void
 }) => {
+  const router = useRouter()
   const [text, setText] = useState('')
+
+  const formatted = (text) =>
+    text == ''
+      ? ''
+      : text.length < 4
+      ? text
+      : text.slice(0, 3) + '-' + text.slice(3)
 
   return (
     <div className=" max-w-sm flex justify-between items-center border-b border-blue-500 py-2 mb-3 px-2">
@@ -15,13 +24,16 @@ const Input = (props: {
         type="text"
         placeholder={props.placeholder}
         aria-label="Full name"
-        value={text}
+        value={formatted(text)}
         onChange={(e) => {
-          setText(e.target.value)
+          if (e.target.value.replace('-', '').length < 7)
+            setText(e.target.value.replace('-', ''))
         }}
       />
-      {props.btnText && props.onClick ? (
-        <Button onClick={props.onClick}>{props.btnText}</Button>
+      {props.btnText ? (
+        <Button primary={false} onClick={() => router.push(`/tacoday/${text}`)}>
+          {props.btnText}
+        </Button>
       ) : (
         ''
       )}
