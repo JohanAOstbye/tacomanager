@@ -42,7 +42,7 @@ const Profile = (props: { tacodays: string }) => {
                 ? `, ${session.user.name}`
                 : ''}
             </h1>
-            <p className="text-sm">diggg er kult</p>
+            <p className="text-sm">hem lem</p>
           </div>
           <div className="rounded-xl w-20 h-20 relative">
             <Image
@@ -59,10 +59,10 @@ const Profile = (props: { tacodays: string }) => {
               {tacodays.map((tacoday, index) => (
                 <div
                   key={index}
-                  className="bg-white my-2 rounded p-1.5 flex w-full justify-between"
+                  className="bg-white my-2 rounded p-2 flex w-full justify-between"
                 >
                   <div className="truncate pr-5">
-                    <p className="truncate ">Tacoday with {tacoday.creator}</p>
+                    <p className="truncate ">Tæc med {tacoday.creator}</p>
                     <p className="text-sm text-gray-500">
                       {dateformatter.medium_wtime(new Date(tacoday.date))}
                     </p>
