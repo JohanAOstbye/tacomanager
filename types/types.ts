@@ -7,7 +7,7 @@ export type tacoday = {
 }
 
 export type displayuser = {
-  username: string
+  displayname: string
   id: string
   image: undefined | string
   joined?: Date

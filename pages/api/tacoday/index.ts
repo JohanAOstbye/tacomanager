@@ -11,16 +11,27 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
 
   if (method === 'POST') {
     const { tid } = request.body
+    console.log(
+      { tid: tid },
+      {
+        date: date,
+      }
+    )
 
     try {
-      const update = await client.db().collection('tacodays').findOneAndUpdate(
-        { tid: tid },
-        {
-          date: date,
-        }
-      )
+      const update = await client
+        .db()
+        .collection('tacodays')
+        .findOneAndUpdate(
+          { tid: tid },
+          {
+            $set: { date: date },
+          }
+        )
       return response.status(200).json(update)
     } catch (error) {
+      console.log(error)
+
       return response.status(418).json({ message: 'failed:(' })
     }
   }
@@ -42,7 +53,14 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
         .insertOne({
           tid: returnTid,
           date: date,
-          attendees: [session.user],
+          attendees: [
+            {
+              displayname: session.user.displayname,
+              id: session.user.id,
+              image: session.user.image,
+              joined: new Date(Date.now()),
+            },
+          ],
           creator: session.user.displayname,
         })
       return response.status(201).json({ message: 'success', tid: returnTid })

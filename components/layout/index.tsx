@@ -15,7 +15,7 @@ const Layout = ({ children, className }: Props) => {
     >
       <Head title="Taco" />
       <Nav />
-      <main className="flex flex-col items-center justify-center w-full flex-1 px-5">
+      <main className="flex flex-col items-center justify-center w-full flex-1 px-5 m-5">
         {children}
       </main>
       <Footer />

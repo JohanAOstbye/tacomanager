@@ -7,7 +7,7 @@ import FullLoader from '../components/sections/FullLoader'
 import axios from 'axios'
 import clientPromise from '../lib/mongodb'
 import { tacoday } from '../types/types'
-import { date } from '../lib/formatting'
+import { dateformatter } from '../lib/formatting'
 import Image from 'next/image'
 
 const Profile = (props: { tacodays: string }) => {
@@ -64,7 +64,7 @@ const Profile = (props: { tacodays: string }) => {
                   <div className="truncate pr-5">
                     <p className="truncate ">Tacoday with {tacoday.creator}</p>
                     <p className="text-sm text-gray-500">
-                      {date.medium_wtime(new Date(tacoday.date))}
+                      {dateformatter.medium_wtime(new Date(tacoday.date))}
                     </p>
                   </div>
                   <ButtonLink link={'/tacoday/' + tacoday.tid}>Gå</ButtonLink>
@@ -83,7 +83,7 @@ const Profile = (props: { tacodays: string }) => {
           >
             Endre butt
           </Button>
-          <Button onClick={() => signOut()}>Log ut</Button>
+          <Button onClick={() => signOut({ callbackUrl: '/' })}>Log ut</Button>
         </div>
       </section>
     </Layout>

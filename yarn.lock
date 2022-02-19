@@ -2821,6 +2821,11 @@ raw-body@2.3.3:
     iconv-lite "0.4.23"
     unpipe "1.0.0"
 
+react-click-away-listener@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/react-click-away-listener/-/react-click-away-listener-2.1.0.tgz#c3884a31966395c5f7fe17ff59db3579ab92e7fa"
+  integrity sha512-D8l2a7zCgtUpo8FVeYb6rtWugxoUjPrWattu7DNakAMAHI8F81T6PAbuAco5qBkRLIS97Jr+0sl9Bf8iPzMTNg==
+
 react-dom@^17.0.2:
   version "17.0.2"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-17.0.2.tgz#ecffb6845e3ad8dbfcdc498f0d0a939736502c23"

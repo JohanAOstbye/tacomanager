@@ -31,9 +31,15 @@ const NewUser = (props: { callbackUrl: string }) => {
   console.log(redirectLink)
 
   const onSubmit = async (values: { displayname: string }) => {
-    axios
-      .post(`/api/profile/displayname`, { displayname: values.displayname })
-      .then(() => router.push(redirectLink))
+    axios.put('/api/profile/set-image').then(() =>
+      axios
+        .post(`/api/profile/displayname`, { displayname: values.displayname })
+        .then(() => {
+          const event = new Event('visibilitychange')
+          document.dispatchEvent(event)
+          router.push(redirectLink)
+        })
+    )
   }
   return (
     <Layout>

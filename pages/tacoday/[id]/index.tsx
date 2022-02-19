@@ -3,13 +3,13 @@ import Image from 'next/image'
 import { getSession, signIn, useSession } from 'next-auth/react'
 import React, { useState } from 'react'
 import { FaCalendarDay, FaClock } from 'react-icons/fa'
-import { Button, ButtonLink } from '../../components/elements/Button'
-import Loading from '../../components/elements/Loading'
-import Layout from '../../components/layout'
-import NoTacoday from '../../components/sections/NoTacoday'
-import { date } from '../../lib/formatting'
-import clientPromise from '../../lib/mongodb'
-import { displayuser, tacoday } from '../../types/types'
+import { Button, ButtonLink } from '../../../components/elements/Button'
+import Loading from '../../../components/elements/Loading'
+import Layout from '../../../components/layout'
+import NoTacoday from '../../../components/sections/NoTacoday'
+import { dateformatter } from '../../../lib/formatting'
+import clientPromise from '../../../lib/mongodb'
+import { displayuser, tacoday } from '../../../types/types'
 
 const Tacoday = (props: { tacoday }) => {
   const [tacoday, setTacoday] = useState<tacoday>({
@@ -20,8 +20,8 @@ const Tacoday = (props: { tacoday }) => {
   const [processing, setProcessing] = useState(false)
   const { data: session, status } = useSession()
 
-  if (!tacoday) {
-    return <NoTacoday tid={''} />
+  if (!tacoday._id) {
+    return <NoTacoday tid={tacoday.tid} />
   }
 
   const attending =
@@ -29,21 +29,9 @@ const Tacoday = (props: { tacoday }) => {
     tacoday.attendees.some((attendee) => attendee.id == session.user.id)
 
   const join = async () => {
-    const username = session.user.displayname
-    const id = session.user.id
-    const now = new Date(Date.now())
-    const user = {
-      username,
-      id,
-      image: session.user.image,
-      joined: now,
-    }
-
     setProcessing(true)
     const data = {
       tid: tacoday.tid,
-      user: user,
-      id: null,
     }
     const response = await axios.put('/api/tacoday/attendees', data)
     setTacoday({
@@ -76,17 +64,17 @@ const Tacoday = (props: { tacoday }) => {
         <div className="flex items-center justify-between w-full">
           <div className=" truncate">
             <h1 className="w-full text-2xl md:text-3xl text-left font-bold">
-              Taco på {date.day(tacoday.date)}
+              Taco på {dateformatter.day(tacoday.date)}
             </h1>
             <div id="clock" className="flex items-center truncate">
               <FaClock className="mr-2" />
-              {date.time(tacoday.date)}
+              {dateformatter.time(tacoday.date)}
               <FaCalendarDay className="ml-5 mr-2" />
               <span className="hidden xs:block truncate">
-                {date.long(tacoday.date)}
+                {dateformatter.long(tacoday.date)}
               </span>
               <span className="xs:hidden truncate">
-                {date.medium(tacoday.date)}
+                {dateformatter.medium(tacoday.date)}
               </span>
             </div>
             <p className="w-full text-left">
@@ -122,7 +110,7 @@ const Tacoday = (props: { tacoday }) => {
             {status == 'authenticated' ? (
               <ButtonLink
                 primary={false}
-                link={`/tacoday/change/`}
+                link={`/tacoday/${tacoday.tid}/change/`}
                 classNames="bg-zinc-200"
               >
                 Endre
@@ -135,6 +123,8 @@ const Tacoday = (props: { tacoday }) => {
 
         <ul className="my-4 flex flex-col items-center justify-center w-full">
           {tacoday.attendees.map((attendee: displayuser) => {
+            console.log(attendee)
+
             attendee.joined = new Date(attendee.joined)
 
             return (
@@ -143,18 +133,20 @@ const Tacoday = (props: { tacoday }) => {
                 key={attendee.id}
               >
                 <div className="flex items-center">
-                  <Image
-                    src={attendee.image}
-                    alt="profile picture"
-                    className="w-8 h-8 rounded-full mr-1.5"
-                  />
-                  {attendee.username}
+                  <div className=" relative w-8 h-8 rounded-full mr-1.5">
+                    <Image
+                      src={attendee.image}
+                      alt="profile picture"
+                      layout="fill"
+                    />
+                  </div>
+                  {attendee.displayname}
                 </div>
                 <div className="block sm:hidden opacity-50 truncate ">
-                  {date.short_wtime(attendee.joined)}
+                  {dateformatter.short_wtime(attendee.joined)}
                 </div>
                 <div className="hidden sm:block opacity-50 overflow-hidden">
-                  Joined: {date.medium_wtime(attendee.joined)}
+                  Joined: {dateformatter.medium_wtime(attendee.joined)}
                 </div>
               </li>
             )
@@ -178,12 +170,13 @@ export async function getServerSideProps(ctx) {
   if (!tacoday) {
     return {
       props: {
-        tacoday: {
-          date_string: null,
-          date: null,
-          attendees: null,
+        tacoday: JSON.stringify({
+          _id: null,
           tid: params.id,
-        },
+          date: new Date(),
+          attendees: [],
+          creator: null,
+        }),
       },
     }
   }
@@ -191,14 +184,11 @@ export async function getServerSideProps(ctx) {
   const session = await getSession(ctx)
 
   if (query.join && tacoday.attendees.some((e) => e.id == session.user.id)) {
-    const username = session.user.displayname
-    const id = session.user.id
-    const now = new Date(Date.now())
     const user: displayuser = {
-      username,
-      id,
+      displayname: session.user.displayname,
+      id: session.user.id,
       image: session.user.image,
-      joined: now,
+      joined: new Date(Date.now()),
     }
     client
       .db()
@@ -218,6 +208,7 @@ export async function getServerSideProps(ctx) {
         .findOne({ tid: params.id })
     ).attendees
   }
+  console.log(tacoday)
 
   return {
     props: {

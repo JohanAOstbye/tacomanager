@@ -1,22 +1,21 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { getSession } from 'next-auth/react'
 import clientPromise from '../../../lib/mongodb'
 import { displayuser, tacoday } from '../../../types/types'
 
 export default async (request: NextApiRequest, response: NextApiResponse) => {
+  const session = await getSession()
+
   const { method } = request
   const client = await clientPromise
 
-  const { tid, user, id }: { tid: string; user?: displayuser; id?: string } =
-    request.body
-
-  const data = { message: 'yeet skibbideet' }
+  const { tid }: { tid: string } = request.body
+  if (!tid) {
+    return response.status(418).json({ message: 'tid is required' })
+  }
+  const defaultreturn = { message: 'yeet skibbideet' }
 
   if (method === 'POST') {
-    if (!tid || !id) {
-      return response
-        .status(418)
-        .json({ message: 'tid and id (user id) is required' })
-    }
     try {
       const newTacoday = await client
         .db()
@@ -26,7 +25,7 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
           {
             $pull: {
               attendees: {
-                id: id,
+                id: session.user.id,
               },
             },
           },
@@ -34,18 +33,17 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
         )
       return response.status(200).json(newTacoday)
     } catch (error) {
-      return response.status(418).json(data)
+      return response.status(418).json(defaultreturn)
     }
   }
 
   if (method === 'PUT') {
-    if (!tid || !user) {
-      response.status(418).json({
-        message:
-          'tid and a user in the format { username: string; id: string; image: undefined | string; joined?: Date; joined_string: string;} is required',
-      })
+    const user: displayuser = {
+      displayname: session.user.displayname,
+      id: session.user.id,
+      image: session.user.image,
+      joined: new Date(Date.now()),
     }
-
     try {
       const newTacoday = client
         .db()
@@ -61,7 +59,7 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
         )
       return response.status(200).json(newTacoday)
     } catch (error) {
-      return response.status(418).json(data)
+      return response.status(418).json(defaultreturn)
     }
   }
 }

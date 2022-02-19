@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { Controller, useForm } from 'react-hook-form'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
@@ -29,31 +30,13 @@ export default function New() {
     )
   }
   if (status == 'unauthenticated') {
-    router.replace('api/auth/signin')
+    router.push('/api/auth/signin')
   }
 
-  const username = data.user.displayname
-  const id = data.user.id
-  const now = new Date(Date.now())
-  const user = {
-    username,
-    id,
-    image: data.user.image
-      ? data.user.image
-      : `https://eu.ui-avatars.com/api/?name=${username}`,
-    joined: now,
-  }
-
-  const create = async () => {
+  const create = async (data: { date: Date }) => {
     setCreating(true)
-    const date = new Date(Date.now())
-    date.setDate(date.getDate() + 1) // setter bare datoen til en dag frem i tid for debug purposes
-    const data = {
-      tid: null,
-      user,
-      date: date.toISOString(),
-    }
     const response = await axios.put('/api/tacoday', data)
+
     router.push(`/tacoday/${response.data.tid}`)
     setCreating(false)
   }
@@ -77,6 +60,7 @@ export default function New() {
                 onBlur={onBlur}
                 date={value}
                 name="date"
+                label="Velg dato"
               />
             )}
           />
@@ -85,7 +69,7 @@ export default function New() {
             <Button type="submit">Kjør tæc</Button>
           </div>
         </div>
-        <div className="relative h-64 w-64 flex-g">
+        <div className="relative h-64 w-64 ml-5">
           <Image src={newTaco} alt="new taco image" layout="fill" />
         </div>
       </form>
