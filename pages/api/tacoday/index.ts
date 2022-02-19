@@ -1,95 +1,71 @@
-import { ObjectID } from 'bson';
-import { MongoClient } from 'mongodb';
-import type { NextApiRequest, NextApiResponse } from 'next';
-import clientPromise from '../../../lib/mongodb';
+import type { NextApiRequest, NextApiResponse } from 'next'
+import { getSession } from 'next-auth/react'
+import clientPromise, { hash, zeroPad } from '../../../lib/mongodb'
 
 export default async (request: NextApiRequest, response: NextApiResponse) => {
-  const { method } = request;
-  const client = await clientPromise;
-
-  const date = new Date();
-  date.setHours(1, 0, 0, 0);
-
-  const today = new Date(date);
-  const tomorrow = new Date(date);
-  tomorrow.setDate(date.getDate() + 1);
-
-  let data = { message: 'yeet skibbideet', date: null, attendees: [] };
-
-  if (method === 'GET') {
-    try {
-      const result = await client
-        .db()
-        .collection('tacodays')
-        .aggregate([
-          {
-            $match: {
-              date: { $gte: today, $lt: tomorrow },
-            },
-          },
-          {
-            $sort: {
-              date: -1,
-            },
-          },
-          {
-            $limit: 1,
-          },
-        ])
-        .toArray();
-      if (result.length == 0) {
-        return response.status(204).json('');
-      } else {
-        return response.status(200).json({ ...result[0], message: 'yess' });
-      }
-    } catch (error) {
-      return response.status(418).json(data);
-    }
-  }
-
-  const {
-    body: { hours, minutes },
-  } = request;
-  if (Array.isArray(hours) || Array.isArray(minutes)) {
-    return response
-      .status(400)
-      .json({ message: 'hours and minutes cant be arrays' });
-  }
-  console.log(date);
-  const hour = parseInt(hours);
-  const minute = parseInt(minutes);
-  console.log({ hour, minute });
-
-  date.setHours(hour, minute);
-  console.log(date);
+  const { method } = request
+  const client = await clientPromise
+  const session = await getSession({ req: request })
+  const { date: string_date } = request.body
+  const date = new Date(string_date)
 
   if (method === 'POST') {
+    const { tid } = request.body
+    console.log(
+      { tid: tid },
+      {
+        date: date,
+      }
+    )
+
     try {
       const update = await client
         .db()
         .collection('tacodays')
-        .updateOne(
-          { date: { $gte: today, $lt: tomorrow } },
-          { $set: { date: date } }
-        );
-      return response.status(200).json(update);
+        .findOneAndUpdate(
+          { tid: tid },
+          {
+            $set: { date: date },
+          }
+        )
+      return response.status(200).json(update)
     } catch (error) {
-      return response.status(418).json(data);
+      console.log(error)
+
+      return response.status(418).json({ message: 'failed:(' })
     }
   }
 
   if (method === 'PUT') {
-    const {
-      body: { name },
-    } = request;
-    const tacoday = { date: date, attendees: [name] };
+    const numtid = await (
+      await client
+        .db()
+        .collection('dayscount')
+        .findOneAndUpdate({ _id: 'tid' }, { $inc: { seq: 1 } })
+    ).value
+
+    const returnTid = hash.encode(zeroPad(numtid.seq))
 
     try {
-      const put = await client.db().collection('tacodays').insertOne(tacoday);
-      return response.status(201).json({ message: 'success', ...put });
+      await client
+        .db()
+        .collection('tacodays')
+        .insertOne({
+          tid: returnTid,
+          date: date,
+          attendees: [
+            {
+              displayname: session.user.displayname,
+              id: session.user.id,
+              image: session.user.image,
+              joined: new Date(Date.now()),
+            },
+          ],
+          creator: session.user.displayname,
+        })
+      return response.status(201).json({ message: 'success', tid: returnTid })
     } catch (error) {
-      console.log(error);
-      return response.status(418).json(data);
+      return response.status(418).json({ message: 'failed:(' })
     }
   }
-};
+}
