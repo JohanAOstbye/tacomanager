@@ -2,7 +2,7 @@ import axios from 'axios'
 import Image from 'next/image'
 import { getSession, signIn, useSession } from 'next-auth/react'
 import React, { useState } from 'react'
-import { FaCalendarDay, FaClock } from 'react-icons/fa'
+import { FaCalendarDay, FaClock, FaShareAlt } from 'react-icons/fa'
 import { Button, ButtonLink } from '../../../components/elements/Button'
 import Loading from '../../../components/elements/Loading'
 import Layout from '../../../components/layout'
@@ -16,24 +16,34 @@ const Tacoday = (props: { tacoday }) => {
     ...JSON.parse(props.tacoday),
     date: new Date(JSON.parse(props.tacoday)['date']),
   })
-
   const [processing, setProcessing] = useState(false)
   const { data: session, status } = useSession()
 
+  // if tacoday cant be found
   if (!tacoday._id) {
     return <NoTacoday tid={tacoday.tid} />
   }
 
+  // check if the current user is attending the tacoday
   const attending =
     session &&
     tacoday.attendees.some((attendee) => attendee.id == session.user.id)
 
-  const join = async () => {
+  //function to join or leave tacoday
+  const attend = async (join: boolean) => {
     setProcessing(true)
+
     const data = {
       tid: tacoday.tid,
     }
-    const response = await axios.put('/api/tacoday/attendees', data)
+
+    let response
+    if (join) {
+      response = await axios.put('/api/tacoday/attendees', data)
+    } else {
+      response = await axios.post('/api/tacoday/attendees', data)
+    }
+
     setTacoday({
       date: new Date(response.data.date),
       ...response.data,
@@ -41,23 +51,37 @@ const Tacoday = (props: { tacoday }) => {
 
     setProcessing(false)
   }
-  const leave = async () => {
-    const id = session.user.id
 
-    setProcessing(true)
-    const data = {
-      tid: tacoday.tid,
-      user: null,
-      id: id,
+  // function to copy url or share
+  const share = () => {
+    if (
+      navigator.share &&
+      navigator.canShare({
+        title: `Tæc på ${dateformatter.day(tacoday.date)}`,
+        text: `${session.user.name} inviter på tday:)`,
+        url: window.location.href,
+      })
+    ) {
+      navigator
+        .share({
+          title: `Tæc på ${dateformatter.day(tacoday.date)}`,
+          text: `${session.user.name} inviter på tday:)`,
+          url: window.location.href,
+        })
+        .then(() => console.log('Successful share'))
+        .catch((error) => console.log('Error sharing', error))
+    } else {
+      navigator.clipboard.writeText(window.location.href).then(
+        function () {
+          console.log('Async: Copying to clipboard was successful!')
+        },
+        function (err) {
+          console.error('Async: Could not copy text: ', err)
+        }
+      )
     }
-    const response = await axios.post('/api/tacoday/attendees', data)
-    setTacoday({
-      date: new Date(response.data.date),
-      ...response.data,
-    })
-
-    setProcessing(false)
   }
+
   return (
     <Layout>
       <section className=" max-w-lg w-full bg-gray-100 flex flex-col items-start p-5 rounded-lg">
@@ -77,20 +101,21 @@ const Tacoday = (props: { tacoday }) => {
                 {dateformatter.medium(tacoday.date)}
               </span>
             </div>
-            <p className="w-full text-left">
-              Antall påmeldte: {tacoday.attendees.length}
-            </p>
+            <div className="flex items-center justify-start">
+              <p className="w-fit mr-3">
+                Antall påmeldte: {tacoday.attendees.length}
+              </p>
+              <button className="flex items-center" onClick={() => share()}>
+                del <FaShareAlt className="ml-1" />
+              </button>
+            </div>
           </div>
           <div className="flex sm:flex-col min-w-max">
             <Button
               primary
               onClick={() => {
                 if (status == 'authenticated') {
-                  if (attending) {
-                    leave()
-                  } else {
-                    join()
-                  }
+                  attend(!attending)
                 } else {
                   signIn(null, {
                     callbackUrl: `/tacoday/${tacoday.tid}?join=true`,
