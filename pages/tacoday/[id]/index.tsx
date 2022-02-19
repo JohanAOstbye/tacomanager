@@ -61,8 +61,8 @@ const Tacoday = (props: { tacoday }) => {
   return (
     <Layout>
       <section className=" max-w-lg w-full bg-gray-100 flex flex-col items-start p-5 rounded-lg">
-        <div className="flex items-center justify-between w-full">
-          <div className=" truncate">
+        <div className="flex sm:items-center flex-col sm:flex-row justify-between w-full">
+          <div className="mb-2 truncate">
             <h1 className="w-full text-2xl md:text-3xl text-left font-bold">
               Taco på {dateformatter.day(tacoday.date)}
             </h1>
@@ -81,7 +81,7 @@ const Tacoday = (props: { tacoday }) => {
               Antall påmeldte: {tacoday.attendees.length}
             </p>
           </div>
-          <div className="flex flex-col min-w-max">
+          <div className="flex sm:flex-col min-w-max">
             <Button
               primary
               onClick={() => {
@@ -97,7 +97,7 @@ const Tacoday = (props: { tacoday }) => {
                   })
                 }
               }}
-              classNames="my-1 flex justify-center"
+              classNames="m-1 flex justify-center"
             >
               {processing ? (
                 <Loading white />
@@ -111,7 +111,7 @@ const Tacoday = (props: { tacoday }) => {
               <ButtonLink
                 primary={false}
                 link={`/tacoday/${tacoday.tid}/change/`}
-                classNames="bg-zinc-200"
+                classNames="my-1 flex justify-center bg-zinc-200"
               >
                 Endre
               </ButtonLink>
