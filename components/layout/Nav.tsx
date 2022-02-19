@@ -9,21 +9,17 @@ const Nav = () => {
   return (
     <div className="w-full h-16 flex items-center justify-between">
       <Link href="/">
-        <a className={`font-bold p-3 m-2 h-16 w-16`}>
+        <a className={`font-bold p-3 m-2 h-16 w-[5.5rem]`}>
           <Image src={taco} objectFit="contain" alt="Home | Tacologo" />
         </a>
       </Link>
-      <div>
+      <div className="truncate">
         <Link href={'/'}>
           <a className={`font-bold p-3 m-2`}>Home</a>
         </Link>
         <Link href={session ? '/profile' : '/api/auth/signin'}>
-          <a className={`font-bold p-3 m-2`}>
-            {session
-              ? session.user.name
-                ? session.user.name
-                : session.user.email
-              : 'sign in'}
+          <a className={`font-bold p-3 m-2 truncate`}>
+            {session ? session.user.displayname : 'sign in'}
           </a>
         </Link>
       </div>
