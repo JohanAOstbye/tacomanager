@@ -10,7 +10,7 @@ export default function Home() {
     <Layout>
       <div className="flex flex-col-reverse items-center lg:flex-row text-center">
         <div className="flex flex-col max-w-sm">
-          <h1 className="text-5xl">Taco with da BOIIIS</h1>
+          <h1 className="text-5xl font-semibold">Taco with da BOIIIS</h1>
           <div className="mx-8 mt-10">
             <ButtonLink link={'/tacoday/new'} classNames="w-full">
               Planlegg en tacokveld

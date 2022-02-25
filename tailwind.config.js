@@ -10,6 +10,11 @@ module.exports = {
         xxs: '320px',
         xs: '440px',
       },
+      fontFamily: {
+        montserrat: ['Montserrat'],
+        lato: ['Lato'],
+        garamond: ['Garamond'],
+      },
     },
   },
   variants: {
