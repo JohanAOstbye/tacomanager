@@ -18,7 +18,7 @@
     "bcryptjs": "^2.4.3",
     "hashids": "^2.2.10",
     "keccak": "^3.0.2",
-    "lint-staged": "^12.3.4",
+    "lint-staged": "^12.3.3",
     "mongodb": "^4.4.0",
     "next": "^12.1.0",
     "next-auth": "^4.1.2",
