@@ -38,7 +38,6 @@ export default function New() {
     const response = await axios.put('/api/tacoday', data)
 
     router.push(`/tacoday/${response.data.tid}`)
-    setCreating(false)
   }
 
   return (
