@@ -46,10 +46,9 @@ const Tacoday = (props: { tacoday }) => {
     }
 
     setTacoday({
-      date: new Date(response.data.date),
       ...response.data,
+      date: new Date(response.data.date),
     })
-
     setProcessing(false)
   }
 
@@ -67,14 +66,11 @@ const Tacoday = (props: { tacoday }) => {
         url: window.location.href,
       })
     ) {
-      navigator
-        .share({
-          title: `Tæc på ${dateformatter.day(tacoday.date)}`,
-          text: `${session.user.name} inviter på tday:)`,
-          url: window.location.href,
-        })
-        .then(() => console.log('Successful share'))
-        .catch((error) => console.log('Error sharing', error))
+      navigator.share({
+        title: `Tæc på ${dateformatter.day(tacoday.date)}`,
+        text: `${session.user.name} inviter på tday:)`,
+        url: window.location.href,
+      })
     } else {
       navigator.clipboard.writeText(window.location.href).then(function () {
         setTooltip('visible')
@@ -157,8 +153,6 @@ const Tacoday = (props: { tacoday }) => {
 
         <ul className="my-4 flex flex-col items-center justify-center w-full">
           {tacoday.attendees.map((attendee: displayuser) => {
-            console.log(attendee)
-
             attendee.joined = new Date(attendee.joined)
 
             return (
@@ -242,7 +236,6 @@ export async function getServerSideProps(ctx) {
         .findOne({ tid: params.id })
     ).attendees
   }
-  console.log(tacoday)
 
   return {
     props: {

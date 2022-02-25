@@ -4,7 +4,7 @@ import clientPromise from '../../../lib/mongodb'
 import { displayuser, tacoday } from '../../../types/types'
 
 export default async (request: NextApiRequest, response: NextApiResponse) => {
-  const session = await getSession()
+  const session = await getSession({ req: request })
 
   const { method } = request
   const client = await clientPromise
@@ -31,7 +31,8 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
           },
           { returnDocument: 'after' }
         )
-      return response.status(200).json(newTacoday)
+
+      return response.status(200).json((await newTacoday).value)
     } catch (error) {
       return response.status(418).json(defaultreturn)
     }
@@ -57,7 +58,8 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
           },
           { returnDocument: 'after' }
         )
-      return response.status(200).json(newTacoday)
+
+      return response.status(200).json((await newTacoday).value)
     } catch (error) {
       return response.status(418).json(defaultreturn)
     }
