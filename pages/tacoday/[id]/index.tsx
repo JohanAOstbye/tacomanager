@@ -17,6 +17,7 @@ const Tacoday = (props: { tacoday }) => {
     date: new Date(JSON.parse(props.tacoday)['date']),
   })
   const [processing, setProcessing] = useState(false)
+  const [tooltip, setTooltip] = useState<'hidden' | 'visible'>('hidden')
   const { data: session, status } = useSession()
 
   // if tacoday cant be found
@@ -52,6 +53,10 @@ const Tacoday = (props: { tacoday }) => {
     setProcessing(false)
   }
 
+  function delay(time) {
+    return new Promise((resolve) => setTimeout(resolve, time))
+  }
+
   // function to copy url or share
   const share = () => {
     if (
@@ -71,14 +76,10 @@ const Tacoday = (props: { tacoday }) => {
         .then(() => console.log('Successful share'))
         .catch((error) => console.log('Error sharing', error))
     } else {
-      navigator.clipboard.writeText(window.location.href).then(
-        function () {
-          console.log('Async: Copying to clipboard was successful!')
-        },
-        function (err) {
-          console.error('Async: Could not copy text: ', err)
-        }
-      )
+      navigator.clipboard.writeText(window.location.href).then(function () {
+        setTooltip('visible')
+        delay(1700).then(() => setTooltip('hidden'))
+      })
     }
   }
 
@@ -105,8 +106,16 @@ const Tacoday = (props: { tacoday }) => {
               <p className="w-fit mr-3">
                 Antall påmeldte: {tacoday.attendees.length}
               </p>
-              <button className="flex items-center" onClick={() => share()}>
+              <button
+                className="flex items-center relative"
+                onClick={() => share()}
+              >
                 del <FaShareAlt className="ml-1" />
+                <div
+                  className={`tooltip ${tooltip} bg-zinc-700 text-zinc-50 absolute z-50 px-1.5 rounded top-0 right-[115%] `}
+                >
+                  copied
+                </div>
               </button>
             </div>
           </div>
