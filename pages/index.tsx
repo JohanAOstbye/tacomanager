@@ -8,7 +8,7 @@ import Input from '../components/elements/Input'
 export default function Home() {
   return (
     <Layout>
-      <div className="flex flex-col-reverse items-center lg:flex-row text-center">
+      <div className="flex flex-col-reverse items-center lg:flex-row text-center w-full">
         <div className="flex flex-col max-w-sm">
           <h1 className="text-5xl font-semibold">Taco with da BOIIIS</h1>
           <div className="mx-8 mt-10">
@@ -28,7 +28,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="text-black flex justify-center items-center h-80 w-80 relative mx-10">
+        <div className="text-black flex justify-center items-center h-40 w-40 md:h-80 md:w-80 relative mx-20">
           <Image src={taco} layout="fill" objectFit="contain" alt="Tacologo" />
         </div>
       </div>

@@ -1,5 +1,5 @@
 import { getSession, signOut, useSession } from 'next-auth/react'
-import React from 'react'
+import React, { useState } from 'react'
 import { Button, ButtonLink } from '../components/elements/Button'
 import Layout from '../components/layout'
 import Router from 'next/router'
@@ -11,6 +11,7 @@ import { dateformatter } from '../lib/formatting'
 import Image from 'next/image'
 
 const Profile = (props: { tacodays: string }) => {
+  const [gif, setgif] = useState(null)
   const tacodays: [{ tid: string; date: Date; creator: string }] | [] =
     JSON.parse(props.tacodays)
 
@@ -26,11 +27,6 @@ const Profile = (props: { tacodays: string }) => {
     Router.push('api/auth/signin')
   }
 
-  const reloadSession = () => {
-    const event = new Event('visibilitychange')
-    document.dispatchEvent(event)
-  }
-
   return (
     <Layout>
       <section className=" max-w-lg w-full bg-gray-100 flex flex-col items-start p-5 rounded-lg">
@@ -42,11 +38,11 @@ const Profile = (props: { tacodays: string }) => {
                 ? `, ${session.user.name}`
                 : ''}
             </h1>
-            <p className="text-sm">diggg er kult</p>
+            <p className="text-sm">hem lem</p>
           </div>
           <div className="rounded-xl w-20 h-20 relative">
             <Image
-              src={session.user.image}
+              src={gif ? gif : session.user.image}
               alt="profile picture"
               layout="fill"
             ></Image>
@@ -59,10 +55,10 @@ const Profile = (props: { tacodays: string }) => {
               {tacodays.map((tacoday, index) => (
                 <div
                   key={index}
-                  className="bg-white my-2 rounded p-1.5 flex w-full justify-between"
+                  className="bg-white my-2 rounded p-2 flex w-full justify-between"
                 >
                   <div className="truncate pr-5">
-                    <p className="truncate ">Tacoday with {tacoday.creator}</p>
+                    <p className="truncate ">Tæc med {tacoday.creator}</p>
                     <p className="text-sm text-gray-500">
                       {dateformatter.medium_wtime(new Date(tacoday.date))}
                     </p>
@@ -78,7 +74,9 @@ const Profile = (props: { tacodays: string }) => {
         <div className="flex justify-between w-full my-5">
           <Button
             onClick={() => {
-              axios.put('/api/profile/set-image').then(() => reloadSession())
+              axios
+                .put('/api/profile/set-image')
+                .then((res) => setgif(res.data))
             }}
           >
             Endre butt
