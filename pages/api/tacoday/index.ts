@@ -11,12 +11,6 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
 
   if (method === 'POST') {
     const { tid } = request.body
-    console.log(
-      { tid: tid },
-      {
-        date: date,
-      }
-    )
 
     try {
       const update = await client
@@ -30,8 +24,6 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
         )
       return response.status(200).json(update)
     } catch (error) {
-      console.log(error)
-
       return response.status(418).json({ message: 'failed:(' })
     }
   }

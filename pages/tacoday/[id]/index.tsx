@@ -17,6 +17,7 @@ const Tacoday = (props: { tacoday }) => {
     date: new Date(JSON.parse(props.tacoday)['date']),
   })
   const [processing, setProcessing] = useState(false)
+  const [tooltip, setTooltip] = useState<'hidden' | 'visible'>('hidden')
   const { data: session, status } = useSession()
 
   // if tacoday cant be found
@@ -45,11 +46,14 @@ const Tacoday = (props: { tacoday }) => {
     }
 
     setTacoday({
-      date: new Date(response.data.date),
       ...response.data,
+      date: new Date(response.data.date),
     })
-
     setProcessing(false)
+  }
+
+  function delay(time) {
+    return new Promise((resolve) => setTimeout(resolve, time))
   }
 
   // function to copy url or share
@@ -62,23 +66,16 @@ const Tacoday = (props: { tacoday }) => {
         url: window.location.href,
       })
     ) {
-      navigator
-        .share({
-          title: `Tæc på ${dateformatter.day(tacoday.date)}`,
-          text: `${session.user.name} inviter på tday:)`,
-          url: window.location.href,
-        })
-        .then(() => console.log('Successful share'))
-        .catch((error) => console.log('Error sharing', error))
+      navigator.share({
+        title: `Tæc på ${dateformatter.day(tacoday.date)}`,
+        text: `${session.user.name} inviter på tday:)`,
+        url: window.location.href,
+      })
     } else {
-      navigator.clipboard.writeText(window.location.href).then(
-        function () {
-          console.log('Async: Copying to clipboard was successful!')
-        },
-        function (err) {
-          console.error('Async: Could not copy text: ', err)
-        }
-      )
+      navigator.clipboard.writeText(window.location.href).then(function () {
+        setTooltip('visible')
+        delay(1700).then(() => setTooltip('hidden'))
+      })
     }
   }
 
@@ -105,8 +102,16 @@ const Tacoday = (props: { tacoday }) => {
               <p className="w-fit mr-3">
                 Antall påmeldte: {tacoday.attendees.length}
               </p>
-              <button className="flex items-center" onClick={() => share()}>
+              <button
+                className="flex items-center relative"
+                onClick={() => share()}
+              >
                 del <FaShareAlt className="ml-1" />
+                <div
+                  className={`tooltip ${tooltip} bg-zinc-700 text-zinc-50 absolute z-50 px-1.5 rounded top-0 right-[115%] `}
+                >
+                  copied
+                </div>
               </button>
             </div>
           </div>
@@ -148,8 +153,6 @@ const Tacoday = (props: { tacoday }) => {
 
         <ul className="my-4 flex flex-col items-center justify-center w-full">
           {tacoday.attendees.map((attendee: displayuser) => {
-            console.log(attendee)
-
             attendee.joined = new Date(attendee.joined)
 
             return (
@@ -233,7 +236,6 @@ export async function getServerSideProps(ctx) {
         .findOne({ tid: params.id })
     ).attendees
   }
-  console.log(tacoday)
 
   return {
     props: {
