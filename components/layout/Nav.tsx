@@ -9,7 +9,7 @@ const Nav = () => {
   return (
     <div className="max-w-7xl w-full h-16 flex items-center justify-between">
       <Link href="/">
-        <a className={`font-bold p-3 m-2 h-16 w-[5.5rem]`}>
+        <a className={`font-bold p-3 m-2 h-16 w-24`}>
           <Image src={taco} objectFit="contain" alt="Home | Tacologo" />
         </a>
       </Link>
