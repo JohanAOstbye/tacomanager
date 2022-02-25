@@ -1,5 +1,5 @@
 import { getSession, signOut, useSession } from 'next-auth/react'
-import React from 'react'
+import React, { useState } from 'react'
 import { Button, ButtonLink } from '../components/elements/Button'
 import Layout from '../components/layout'
 import Router from 'next/router'
@@ -11,6 +11,7 @@ import { dateformatter } from '../lib/formatting'
 import Image from 'next/image'
 
 const Profile = (props: { tacodays: string }) => {
+  const [gif, setgif] = useState(null)
   const tacodays: [{ tid: string; date: Date; creator: string }] | [] =
     JSON.parse(props.tacodays)
 
@@ -24,11 +25,6 @@ const Profile = (props: { tacodays: string }) => {
   }
   if (status == 'unauthenticated') {
     Router.push('api/auth/signin')
-  }
-
-  const reloadSession = () => {
-    const event = new Event('visibilitychange')
-    document.dispatchEvent(event)
   }
 
   return (
@@ -46,7 +42,7 @@ const Profile = (props: { tacodays: string }) => {
           </div>
           <div className="rounded-xl w-20 h-20 relative">
             <Image
-              src={session.user.image}
+              src={gif ? gif : session.user.image}
               alt="profile picture"
               layout="fill"
             ></Image>
@@ -78,7 +74,9 @@ const Profile = (props: { tacodays: string }) => {
         <div className="flex justify-between w-full my-5">
           <Button
             onClick={() => {
-              axios.put('/api/profile/set-image').then(() => reloadSession())
+              axios
+                .put('/api/profile/set-image')
+                .then((res) => setgif(res.data))
             }}
           >
             Endre butt

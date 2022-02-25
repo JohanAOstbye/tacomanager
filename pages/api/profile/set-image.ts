@@ -62,7 +62,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     }`
 
     if (session.user.image) {
-      const user = await client
+      await client
         .db()
         .collection('users')
         .findOneAndUpdate(
@@ -71,10 +71,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           { returnDocument: 'after' }
         )
 
-      res.status(200).json({ user })
+      res.status(200).json(gif)
     }
 
-    const user = await client
+    await client
       .db()
       .collection('users')
       .findOneAndUpdate(
@@ -82,7 +82,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         { $set: { image: gif } },
         { returnDocument: 'after' }
       )
-    res.status(200).json({ user })
+    res.status(200).json(gif)
   } else {
     res.status(418).json({ message: 'you are not logged in' })
   }
